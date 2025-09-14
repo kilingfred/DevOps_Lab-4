@@ -4,8 +4,9 @@ const app = express();
 const fileUpload = require("express-fileupload");
 const port = env.PORT || 3000;
 const cloudinary = require("cloudinary");
-require("dotenv").config();
+const HOSTNAME = env.HOSTNAME || "0.0.0.0";
 
+require("dotenv").config();
 app.use(fileUpload({ useTempFiles: true }));
 app.set("views", "./views");
 app.set("view engine", "ejs");
@@ -23,4 +24,6 @@ app.post("/upload", (req, res) => {
     .then((result) => console.log(result));
 });
 app.get("/", (req, res) => res.render("index", { title: "Hello World!" }));
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(port, HOSTNAME, () =>
+  console.log(`Server running at http://${HOSTNAME}:${PORT}/`)
+);
