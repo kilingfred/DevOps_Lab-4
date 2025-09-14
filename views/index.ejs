@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><%= title %></title>
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <input type="file" id="inputImageFile" accept="image/*" />
+    <button id="uploadFileButton">Upload selected image to Cloudinary</button>
+    <div id="result"></div>
+    <a href="">Show uploaded images</a>
+  </body>
+  <script>
+    function uploadImage(imageUrl) {
+      fetch("/upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ imageUrl }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            document.getElementById("result").innerText =
+              "Error: " + data.error;
+          } else {
+            document.getElementById("result").innerHTML = `
+                        <p>Image uploaded successfully!</p>
+                        <p>Public ID: ${data.public_id}</p>
+                        <p>URL: <a href="${data.url}" target="_blank">${data.url}</a></p>
+                        <img src="${data.url}" alt="Uploaded Image" style="max-width: 300px;"/>
+                    `;
+          }
+        })
+        .catch((error) => {
+          document.getElementById("result").innerText =
+            "Error: " + error.message;
+        });
+    }
+    document.getElementById("uploadFileButton").onclick = function () {
+      const fileInput = document.getElementById("inputImageFile");
+      if (fileInput.files.length === 0) {
+        document.getElementById("result").innerText =
+          "Please select an image file.";
+        return;
+      }
+      const formData = new FormData();
+      formData.append("image", fileInput.files[0]);
+      fetch("/upload", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            document.getElementById("result").innerText =
+              "Error: " + data.error;
+          } else {
+            document.getElementById("result").innerHTML = `
+            <p>Image uploaded successfully!</p>
+            <p>Public ID: ${data.public_id}</p>
+            <p>URL: <a href="${data.url}" target="_blank">${data.url}</a></p>
+            <img src="${data.url}" alt="Uploaded Image" style="max-width: 300px;"/>
+          `;
+          }
+        })
+        .catch((error) => {
+          document.getElementById("result").innerText =
+            "Error: " + error.message;
+        });
+    };
+  </script>
+</html>
