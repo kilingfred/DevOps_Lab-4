@@ -12,37 +12,10 @@
     <div id="result"></div>
     <a
       href="https://console.cloudinary.com/app/c-db9615b7c3bbe3a80600ac7255089a/assets/media_library/search?q=&view_mode=mosaic"
-      >Show uploaded images</a
+      >Show images</a
     >
   </body>
   <script>
-    function uploadImage(imageUrl) {
-      fetch("/upload", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ imageUrl }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.error) {
-            document.getElementById("result").innerText =
-              "Error: " + data.error;
-          } else {
-            document.getElementById("result").innerHTML = `
-                        <p>Image uploaded successfully!</p>
-                        <p>Public ID: ${data.public_id}</p>
-                        <p>URL: <a href="${data.url}" target="_blank">${data.url}</a></p>
-                        <img src="${data.url}" alt="Uploaded Image" style="max-width: 300px;"/>
-                    `;
-          }
-        })
-        .catch((error) => {
-          document.getElementById("result").innerText =
-            "Error: " + error.message;
-        });
-    }
     document.getElementById("uploadFileButton").onclick = function () {
       const fileInput = document.getElementById("inputImageFile");
       if (fileInput.files.length === 0) {
